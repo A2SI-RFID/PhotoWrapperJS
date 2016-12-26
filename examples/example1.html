@@ -1,0 +1,98 @@
+<!Doctype html>
+<html>
+<head>
+	<title> photoWrapperJS Example 1 </title>
+	<style>
+		#photoWrapper{
+			margin : 10px 5%;
+			width : 90%;
+		}
+
+		#photoWrapper video{
+			width : 500px;
+			margin : auto;
+			display : block;
+		}
+
+
+		#toolbar, #result {
+			width : 90%;
+			text-align: center;
+			margin : 10px auto;
+		}
+
+		#imgResult {
+			max-width : 90%;
+		}
+	</style>
+</head>
+<body>
+	<div id="photoWrapper"></div>
+	<div id="toolbar">
+		<button id="start"> Start </button>
+		<button id="stop"> Stop </button>
+		<button id="snap"> Snap </button>
+		<button id="import"> Import </button>
+		<button id="switchSource"> Switch source </button>
+		<button id="clear"> Clear photo </button>
+	</div>
+	<div id="result">
+		<img id="imgResult" alt="result image not available"/>
+	</div>
+
+<script type="text/javascript" src="../photoWrapper.js" ></script>
+<script type="text/javascript">
+	// initiate the canvas
+	var photoWrapper = new photoWrapper.photoWrapper(document.getElementById("photoWrapper"),500,500,function(){
+		console.log("after init");
+		if(!this.hasAccessToMedia()){
+			alert("No access to media, you should hide the video element");
+		}
+	},function(dataUrl){
+		console.log("on import photo");
+		document.querySelector('#imgResult').src = dataUrl;
+	});
+
+	// bind start button click
+	document.querySelector("#start").addEventListener('click',function(){
+		photoWrapper.start();
+	})
+
+	// bind stop button click
+	document.querySelector("#stop").addEventListener('click',function(){
+		photoWrapper.stop();
+	})
+
+	// bind snap button click
+	document.querySelector("#snap").addEventListener('click',function(){
+		img  = photoWrapper.getPhoto();
+		if(!img){
+			alert("No photo taken");
+			return;
+		}
+
+		document.querySelector('#imgResult').src = img;
+	})
+
+	// bind import button click
+	document.querySelector("#import").addEventListener('click',function(){
+		photoWrapper.triggerInputFileClick();
+	})
+
+	// bind switch source button click
+	document.querySelector("#switchSource").addEventListener('click',function(){
+		if(!photoWrapper.canSwitchSources()){
+			alert("No source to switch to");
+			return
+		}
+		photoWrapper.switchSource();
+	})
+
+	// bind clear photo button click
+	document.querySelector("#clear").addEventListener('click',function(){
+		document.querySelector('#imgResult').src = null;
+	})
+
+</script>
+</body>
+</html>
